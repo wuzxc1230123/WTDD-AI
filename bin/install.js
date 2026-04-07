@@ -1617,9 +1617,19 @@ function generateCodexAgentToml(agentName, agentContent) {
 function generateCodexConfigBlock(agents, targetDir) {
   // Use absolute paths when targetDir is provided — Codex ≥0.116 requires
   // AbsolutePathBuf for config_file and cannot resolve relative paths.
-  const agentsPrefix = targetDir
-    ? path.resolve(path.join(targetDir, 'agents')).replace(/\\/g, '/')
-    : 'agents';
+  let agentsPrefix;
+  if (targetDir) {
+    // On Windows, path.resolve() converts /home/user to D:/home/user
+    // If targetDir is already absolute (starts with /), use it directly
+    const normalizedTarget = targetDir.replace(/\\/g, '/');
+    if (normalizedTarget.startsWith('/')) {
+      agentsPrefix = normalizedTarget + '/agents';
+    } else {
+      agentsPrefix = path.resolve(path.join(targetDir, 'agents')).replace(/\\/g, '/');
+    }
+  } else {
+    agentsPrefix = 'agents';
+  }
   const lines = [
     WTDD_CODEX_MARKER,
     '',
@@ -2644,9 +2654,10 @@ function ensureCodexHooksFeature(configContent) {
 
     const sectionBody = configContent.slice(featuresSection.headerEnd, featuresSection.end);
     const needsSeparator = sectionBody.length > 0 && !sectionBody.endsWith('\n') && !sectionBody.endsWith('\r\n');
-    const insertPrefix = sectionBody.length === 0 || sectionBody.startsWith(eol) ? '' : eol;
-    const insertText = `${insertPrefix}${needsSeparator ? eol : ''}codex_hooks = true${eol}`;
-    const merged = configContent.slice(0, featuresSection.headerEnd) + insertText + configContent.slice(featuresSection.headerEnd);
+    // Insert at the end of the section (before the next table), not at the beginning
+    // This preserves existing comments and content in the [features] section
+    const insertText = `${needsSeparator ? eol : ''}codex_hooks = true${eol}`;
+    const merged = configContent.slice(0, featuresSection.end) + insertText + configContent.slice(featuresSection.end);
     return {
       content: repairTrappedFeaturesKeys(merged),
       ownership: 'section',
