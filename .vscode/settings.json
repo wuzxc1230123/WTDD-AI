@@ -1,28 +1,4 @@
 {
     "claudeCode.allowDangerouslySkipPermissions": true,
     "claudeCode.initialPermissionMode": "bypassPermissions",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit",
-        "source.organizeImports": "explicit"
-    },
-    "files.associations": {
-        "*.cs": "csharp",
-        "*.csproj": "xml",
-        "*.sln": "xml",
-        "*.slnx": "xml"
-    },
-    "files.exclude": {
-        "**/.vs": true,
-        "**/Properties/launchSettings.json": true,
-        // 显示 .claude 下的 bin 文件夹（GSD 工具）
-        "**/.claude/bin": false,
-    },
-    "search.exclude": {
-        "**/.vs": true,
-        "**/packages": true,
-        // 搜索时包含 .claude/bin
-        "**/.claude/bin": false,
-    },
 }
