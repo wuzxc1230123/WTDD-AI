@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__fetcher__fetch_url",
+      "Bash(git add:*)",
+      "WebFetch(domain:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "defaultMode": "bypassPermissions"
+  }
+}
